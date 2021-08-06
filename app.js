@@ -6,7 +6,7 @@ import * as dat from 'dat.gui'
 import { TimelineMax } from 'gsap'
 
 
-export default class Sketch {    
+export default class Sketch {
     constructor(selector) {
         // Canvas settings
         this.container = document.querySelector(selector)
@@ -30,12 +30,12 @@ export default class Sketch {
         this.camera.position.set(0, 0, 2)
         this.scene.add(this.camera)
 
-        // Controls
+        // Camera controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement)
         this.controls.enableDamping = true
 
+        // Timer
         this.clock = new THREE.Clock()
-        this.lastElapsedTime = 0
         this.isPlaying = true
 
         // Call other methods
@@ -43,7 +43,7 @@ export default class Sketch {
         this.resize()
         this.addObjects()
         this.render()
-        this.settings()
+        this.guiControls()
     }
 
     addObjects() {
@@ -54,11 +54,14 @@ export default class Sketch {
             vertexShader: vertex,
             uniforms: {
                 progress: { type: 'f', value: 0 },
-                uTime: { type: 'f', value: 0}
+                uTime: { type: 'f', value: 0},
+                uSize: { type: 'f', value: 30 * renderer.getPixelRatio() }
             },
             wireframe: false,
             transparent: false,
-            side: THREE.DoubleSide
+            // depthWrite: false,
+            side: THREE.DoubleSide,
+            blending: THREE.AdditiveBlending,
         })
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.scene.add(this.mesh)
@@ -101,13 +104,13 @@ export default class Sketch {
         // window.requestAnimationFrame(this.render)
     }
 
-    settings() {
+    guiControls() {
         let that = this
         this.settings = {
             progress: 0
         }
         this.gui = new dat.GUI()
-        this.gui.add(this.settings, 'progress').min(0).max(1).step(0.01)
+        this.gui.add(this.settings, 'progress').min(0).max(1).step(0.01).onFinishChange(() => {})
         this.gui.add(this, 'isPlaying')
     }
 
@@ -116,7 +119,7 @@ export default class Sketch {
     }
 
     resize() {
-        // Update width and height
+        // Update canvas width and height
         this.width = this.container.offsetWidth
         this.height = this.container.offsetHeight
 

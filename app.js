@@ -55,13 +55,13 @@ export default class Sketch {
             uniforms: {
                 progress: { type: 'f', value: 0 },
                 uTime: { type: 'f', value: 0},
-                uSize: { type: 'f', value: 30 * renderer.getPixelRatio() }
+                uSize: { type: 'f', value: 30 * this.renderer.getPixelRatio() }
             },
             wireframe: false,
             transparent: false,
             // depthWrite: false,
             side: THREE.DoubleSide,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.NormalBlending,
         })
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.scene.add(this.mesh)
